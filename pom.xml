@@ -19,6 +19,7 @@
 		<lombok-mapstruct-binding.version>0.2.0</lombok-mapstruct-binding.version>
 		<org.springframework.boot.version>2.6.1</org.springframework.boot.version>
 		<maven-compiler-plugin.version>3.8.1</maven-compiler-plugin.version>
+		<org.projectlombok.version>1.18.22</org.projectlombok.version>
 	</properties>
 	<dependencies>
 		<dependency>
@@ -51,6 +52,7 @@
 		<dependency>
 			<groupId>org.projectlombok</groupId>
 			<artifactId>lombok</artifactId>
+			<version>${org.projectlombok.version}</version>
 			<optional>true</optional>
 		</dependency>
 		<dependency>

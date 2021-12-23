@@ -1,5 +1,7 @@
 package br.com.beerstock.beerstockapi.api.exception;
 
+import java.util.UUID;
+
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.ResponseStatus;
 
@@ -11,7 +13,7 @@ public class BeerNotFoundException extends Exception {
             "Beer with nem %s not found in the system.", beerName));
     }
 
-    public BeerNotFoundException(Long id) {
+    public BeerNotFoundException(UUID id) {
         super(String.format("Beer with id %s not found in the system.", id));
     }
 
