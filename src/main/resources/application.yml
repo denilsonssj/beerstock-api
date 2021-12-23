@@ -8,3 +8,5 @@ spring:
         database-platform: org.hibernate.dialect.H2Dialect
 server:
     port: 9001
+springdoc:
+    version: "@org.springdoc.version@"
