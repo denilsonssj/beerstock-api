@@ -61,7 +61,7 @@ $ ./mvnw test
 
 ## Demo
 
-The demo project can be viewed here.
+The demo project can be viewed [here](https://denilsonssj-beerstock-api.herokuapp.com/swagger-ui/index.html).
 
 ## License
 [MIT](https://github.com/denilsonssj/beerstock-api/blob/main/LICENSE)
