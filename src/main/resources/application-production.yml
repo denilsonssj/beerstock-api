@@ -1,0 +1,10 @@
+database:
+    config:
+        url: ${DATABASE_URL}
+        driverClassName: ${DRIVER_CLASSNAME}
+        username: ${DATABASE_URL}
+        password: ${DATABASE_PASSWORD}
+server:
+    port: ${SERVER_PORT}
+springdoc:
+    version: "@org.springdoc.version@"
