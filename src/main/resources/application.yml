@@ -1,12 +1,15 @@
 spring:
-    datasource:
-        url: "jdbc:h2:mem:beerstock;DB_CLOSE_DELAY=-1;DB_CLOSE_ON_EXIT=FALSE"
-        driverClassName: "org.h2.Driver"
-        username: "sa"
-        password: ""
-    jpa:
-        database-platform: org.hibernate.dialect.H2Dialect
+  profiles:
+    active: "@spring.profiles.active@"
+database:
+    config:
+        url: ${DATABASE_URL}
+        driverClassName: ${DRIVER_CLASSNAME}
+        username: ${DATABASE_URL}
+        password: ${DATABASE_PASSWORD}
 server:
     port: 9001
 springdoc:
     version: "@org.springdoc.version@"
+    swagger-ui:
+        path: /swagger-ui
