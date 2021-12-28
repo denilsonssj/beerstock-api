@@ -21,6 +21,7 @@ import br.com.beerstock.beerstockapi.api.dtos.QuantityDTO;
 import br.com.beerstock.beerstockapi.api.exception.BeerAlreadyRegisteredException;
 import br.com.beerstock.beerstockapi.api.exception.BeerNotFoundException;
 import br.com.beerstock.beerstockapi.api.exception.BeerStockExceededException;
+import br.com.beerstock.beerstockapi.api.exception.StockLessThenZeroException;
 import br.com.beerstock.beerstockapi.domain.services.BeerService;
 
 @RestController
@@ -60,6 +61,15 @@ public class BeerController {
         @Valid QuantityDTO quantityDTO)
         throws BeerNotFoundException, BeerStockExceededException {
         return this.beerService.increment(id, quantityDTO.getQuantity());
+    }
+
+    @PatchMapping("/decrement/{id}")
+    public BeerDTO decrement(
+        @PathVariable UUID id,
+        @RequestBody
+        @Valid QuantityDTO quantityDTO)
+        throws BeerNotFoundException, StockLessThenZeroException {
+        return this.beerService.decrement(id, quantityDTO.getQuantity());
     }
 
 }

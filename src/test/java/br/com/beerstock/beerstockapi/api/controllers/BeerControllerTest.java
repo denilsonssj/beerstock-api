@@ -231,4 +231,44 @@ public class BeerControllerTest {
             .andExpect(status().isNotFound());
     }
 
+    @Test
+    @DisplayName("When PATCH is called to decrement stock then OK status is returned")
+    void whenPATCHIsCalledToDecrementStockThenOKStatusIsReturned() throws Exception {
+        QuantityDTO quantityDTO = QuantityDTO.builder().quantity(5).build();
+        BeerDTO beerDTO = BeerDTOBuilder.builder().build().toBeerDto();
+        beerDTO.setQuantity(beerDTO.getQuantity() - quantityDTO.getQuantity());
+
+        //when
+        when(this.beerService.decrement(VALID_BEER_ID, quantityDTO.getQuantity()))
+            .thenReturn(beerDTO);
+        
+        mockMvc.perform(
+                patch(String.format("%s/%s/%s",
+                    BEER_API_URL_PATH, BEER_API_SUBPATH_DECREMENT_URL, VALID_BEER_ID))
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(asJsonString(quantityDTO)))
+            .andExpect(jsonPath("$.name", is(beerDTO.getName())))
+            .andExpect(jsonPath("$.brand", is(beerDTO.getBrand())))
+            .andExpect(jsonPath("$.type", is(beerDTO.getType().toString())))
+            .andExpect(jsonPath("$.quantity", is(beerDTO.getQuantity())));
+    }
+
+    @Test
+    @DisplayName("When PATCH is called with invalid beer id to decrement then not found status is returned")
+    void whenPATCHIsCalledWithInvalidBeerIdToDecrementThenNotFoundStatusIsReturned() throws Exception {
+        // given
+        QuantityDTO quantityDTO = QuantityDTO.builder().quantity(10).build();
+
+        // when
+        when(this.beerService.decrement(INVALID_BEER_ID, quantityDTO.getQuantity()))
+            .thenThrow(BeerNotFoundException.class);
+        
+        // then
+        mockMvc.perform(patch(String.format("%s/%s/%s",
+                BEER_API_URL_PATH, BEER_API_SUBPATH_DECREMENT_URL, INVALID_BEER_ID))
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(asJsonString(quantityDTO)))
+            .andExpect(status().isNotFound());
+    }
+
 }
