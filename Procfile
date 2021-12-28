@@ -1,1 +1,0 @@
-web java -D server.port=$SERVER_PORT -D database.config.url=$DATABASE_URL -D database.config.username=$DATABASE_USERNAME -D database.config.password=$DATABASE_PASSWORD -D database.config.driverClassname=$DRIVER_CLASSNAME $JAVA_OPTS -jar target/beerstockapi-0.0.1-SNAPSHOT.jar
