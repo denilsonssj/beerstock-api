@@ -4,7 +4,7 @@ spring:
 database:
     config:
         url: ${DATABASE_URL}
-        driverClassName: ${DRIVER_CLASSNAME}
+        driverClassname: ${DRIVER_CLASSNAME}
         username: ${DATABASE_URL}
         password: ${DATABASE_PASSWORD}
 server:
