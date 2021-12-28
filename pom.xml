@@ -76,6 +76,12 @@
 			<artifactId>springdoc-openapi-ui</artifactId>
 			<version>${org.springdoc.version}</version>
 		</dependency>
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-actuator</artifactId>
+			<version>${org.springframework.boot.version}</version>
+		</dependency>
+
 
 		<!-- Testing -->
 		<dependency>
