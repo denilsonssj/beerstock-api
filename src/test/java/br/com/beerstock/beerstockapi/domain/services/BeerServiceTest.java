@@ -27,6 +27,7 @@ import br.com.beerstock.beerstockapi.api.dtos.BeerDTO;
 import br.com.beerstock.beerstockapi.api.exception.BeerAlreadyRegisteredException;
 import br.com.beerstock.beerstockapi.api.exception.BeerNotFoundException;
 import br.com.beerstock.beerstockapi.api.exception.BeerStockExceededException;
+import br.com.beerstock.beerstockapi.api.exception.StockLessThenZeroException;
 import br.com.beerstock.beerstockapi.api.mappers.BeerMapper;
 import br.com.beerstock.beerstockapi.api.repository.BeerRepository;
 import br.com.beerstock.beerstockapi.common.builder.BeerDTOBuilder;
@@ -249,6 +250,78 @@ public class BeerServiceTest {
         //then 
         assertThrows(BeerNotFoundException.class, () ->
             this.beerService.increment(INVALID_BEER_ID, QUANTITY_TO_INCREMENT));
+    }
+
+    @Test
+    @DisplayName("When increment is called then decrement beer stock")
+    void whenDecrementIsCalledThenDecrementBeerStock()
+        throws BeerNotFoundException, StockLessThenZeroException {
+        // given
+        BeerDTO expectedBeerDTO = BeerDTOBuilder.builder().build().toBeerDto();
+        Beer expectedBeer = this.beerMapper.toBeer(expectedBeerDTO);
+
+        // when
+        when(this.beerRepository.findById(expectedBeerDTO.getId()))
+            .thenReturn(Optional.of(expectedBeer));
+        when(this.beerRepository.save(expectedBeer)).thenReturn(expectedBeer);
+
+        final int QUANTITY_TO_DECREMENT = 5;
+        int expectedQuantityAfterDecrement = expectedBeer.getQuantity()
+            - QUANTITY_TO_DECREMENT;
+        BeerDTO decrementedBeerDTO = this.beerService
+            .decrement(expectedBeerDTO.getId(), QUANTITY_TO_DECREMENT);
+
+        // then 
+        assertThat(
+            expectedQuantityAfterDecrement,
+            equalTo(decrementedBeerDTO.getQuantity()));
+        assertThat(
+            expectedQuantityAfterDecrement,
+            lessThan(decrementedBeerDTO.getMax()));
+    }
+
+    @Test
+    @DisplayName("When decrement is greather than max stock then throw exception")
+    void whenDecrementIsGreatherThanMaxStockThenThrowException() {
+        BeerDTO expectedBeerDTO = BeerDTOBuilder.builder().build().toBeerDto();
+        Beer expectedBeer = beerMapper.toBeer(expectedBeerDTO);
+
+        when(this.beerRepository.findById(expectedBeerDTO.getId()))
+            .thenReturn(Optional.of(expectedBeer));
+        final int QUANTITY_TO_DECREMENT = 80;
+        assertThrows(StockLessThenZeroException.class, () ->
+            this.beerService.decrement(
+                expectedBeerDTO.getId(),
+                QUANTITY_TO_DECREMENT));
+    }
+
+    @Test
+    @DisplayName("When decrement after subtract is greather than min stock then throw exception")
+    void whenDecrementAfterSubtractIsGreatherThanMaxStockThenThrowException() {
+        BeerDTO expectedBeerDTO = BeerDTOBuilder.builder().build().toBeerDto();
+        Beer expectedBeer = beerMapper.toBeer(expectedBeerDTO);
+
+        when(this.beerRepository.findById(expectedBeerDTO.getId()))
+            .thenReturn(Optional.of(expectedBeer));
+        final int QUANTITY_TO_DECREMENT = 60;
+        assertThrows(StockLessThenZeroException.class, () ->
+            this.beerService.decrement(
+                expectedBeerDTO.getId(),
+                QUANTITY_TO_DECREMENT));
+    }
+
+    @Test
+    @DisplayName("When decrement is called with invalid id then throw exception")
+    void whenDecrementIsCalledWithInvalidIdThenThrowException() {
+        final int QUANTITY_TO_DECREMENT = 10;
+
+        //when
+        when(this.beerRepository.findById(INVALID_BEER_ID))
+            .thenReturn(Optional.empty());
+
+        //then 
+        assertThrows(BeerNotFoundException.class, () ->
+            this.beerService.decrement(INVALID_BEER_ID, QUANTITY_TO_DECREMENT));
     }
 
 }

@@ -12,6 +12,7 @@ import br.com.beerstock.beerstockapi.api.dtos.BeerDTO;
 import br.com.beerstock.beerstockapi.api.exception.BeerAlreadyRegisteredException;
 import br.com.beerstock.beerstockapi.api.exception.BeerNotFoundException;
 import br.com.beerstock.beerstockapi.api.exception.BeerStockExceededException;
+import br.com.beerstock.beerstockapi.api.exception.StockLessThenZeroException;
 import br.com.beerstock.beerstockapi.api.mappers.BeerMapper;
 import br.com.beerstock.beerstockapi.api.repository.BeerRepository;
 import br.com.beerstock.beerstockapi.domain.entity.Beer;
@@ -56,7 +57,13 @@ public class BeerService {
             .collect(Collectors.toList());
     }
 
-    public BeerDTO increment(UUID id, int quantityToIncrement) throws BeerNotFoundException, BeerStockExceededException {
+    public void deleteById(UUID id) throws BeerNotFoundException {
+        verifyIfExistsById(id);
+        this.beerRepository.deleteById(id);
+    }
+
+    public BeerDTO increment(UUID id, int quantityToIncrement)
+        throws BeerNotFoundException, BeerStockExceededException {
         Beer beerToIncrementStock = verifyIfExistsById(id);
         int quantityAfterIncrement = quantityToIncrement + beerToIncrementStock.getQuantity();
         if (quantityAfterIncrement <= beerToIncrementStock.getMax()) {
@@ -67,9 +74,16 @@ public class BeerService {
         throw new BeerStockExceededException(id, quantityToIncrement);
     }
 
-    public void deleteById(UUID id) throws BeerNotFoundException {
-        verifyIfExistsById(id);
-        this.beerRepository.deleteById(id);
+    public BeerDTO decrement(UUID id, int quantityToDecrement)
+        throws BeerNotFoundException, StockLessThenZeroException {
+        Beer beerToDecrementStock = verifyIfExistsById(id);
+        int quantityAfterDecrement = beerToDecrementStock.getQuantity() - quantityToDecrement;
+        if (quantityAfterDecrement >= 0) {
+            beerToDecrementStock.setQuantity(quantityAfterDecrement);
+            Beer decrementedBeerStock = this.beerRepository.save(beerToDecrementStock);
+            return this.beerMapper.toBeerDTO(decrementedBeerStock);
+        }
+        throw new StockLessThenZeroException(id, quantityToDecrement);
     }
 
 }
