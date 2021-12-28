@@ -12,7 +12,5 @@ server:
     port: 9001
 springdoc:
     version: "@org.springdoc.version@"
-    api-docs:
-        enabled: false
     swagger-ui:
-        path: /swagger-ui
+        path: /swagger-ui.html
